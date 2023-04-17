@@ -1,0 +1,18 @@
+.gallery_list{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.img_comments {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    justify-content: center;
+    }
+
+.image_comment {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
