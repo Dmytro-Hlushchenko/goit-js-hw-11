@@ -1,6 +1,7 @@
 import axios from "axios";
 import Notiflix from 'notiflix';
 import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
 
 const KEY_PIXABAY = "32473548-3011831d563d5a9dc36fe58a5";
@@ -10,10 +11,10 @@ const SAFESEARCH = "safesearch=true";
 
 const gallery = document.querySelector(".gallery_list")
 const inputForm = document.getElementById('search-form');
-const searchBtn = document.querySelector('button');
+
 
 inputForm.addEventListener('submit', onSearchBtn);
-
+        
 function onSearchBtn(e) {
     e.preventDefault();
     const query = (e.currentTarget.elements.searchQuery.value).trim();
@@ -24,7 +25,6 @@ function onSearchBtn(e) {
     axios(`https://pixabay.com/api/?key=${KEY_PIXABAY}&q=${query}&${IMG_TYPE}&${ORIENT}&${SAFESEARCH}`)
         .then(({ data }) => createGallery(data.hits))
         .catch(onErrore);
-       
         
     
     function createGallery(resultArray) {
@@ -32,9 +32,12 @@ function onSearchBtn(e) {
             Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
             return
             }
-        console.log(resultArray);
+        
         const list = resultArray.reduce((markup, item) => markup + createCard(item), "");
         gallery.innerHTML = list;
+        
+        let lightbox = new SimpleLightbox('.gallery a', { /* options */ });
+        lightbox.refresh()
     
     }
     
@@ -50,8 +53,7 @@ function onSearchBtn(e) {
         </div>
         </li>`
     }
-        
-    
+
     function onErrore(err) {
             alert(`Oops${err}`);
     };
