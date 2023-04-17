@@ -1,5 +1,7 @@
 import axios from "axios";
 import Notiflix from 'notiflix';
+import SimpleLightbox from "simplelightbox";
+
 
 const KEY_PIXABAY = "32473548-3011831d563d5a9dc36fe58a5";
 const IMG_TYPE = "image_type=photo";
