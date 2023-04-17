@@ -23,12 +23,12 @@ function onSearchBtn(e) {
     axios(`https://pixabay.com/api/?key=${KEY_PIXABAY}&q=${query}&${IMG_TYPE}&${ORIENT}&${SAFESEARCH}&per_page=40`)
         .then(({ data }) => createGallery(data.hits))
         .catch(onErrore);
-        
-        function createGallery(resultArray) {
+    
+    function createGallery(resultArray) {
         if (resultArray.length === 0) {
             Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
             return
-            }
+        }
         
         const list = resultArray.reduce((markup, item) => markup + createCard(item), "");
         gallery.innerHTML = list;
@@ -38,8 +38,8 @@ function onSearchBtn(e) {
     
     }
     
-    function createCard(item) { 
-        return `<li>
+    function createCard(item) {
+        return `<li class = "gallery_item">
          <a href = "${item.largeImageURL}">
         <img width = "480" height = "320" src = "${item.webformatURL}" alt = "${item.tags}"></img></a>
         <div class = "img_comments">
@@ -52,7 +52,6 @@ function onSearchBtn(e) {
     }
 
     function onErrore(err) {
-            alert(`Oops${err}`);
-    };
+        alert(`Oops${err}`);
+    }
 }
-

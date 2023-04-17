@@ -1,6 +1,11 @@
 #search-form {
+    top: 0px;
+    height: 50px;
+    width: 100%;
+    position: fixed;
     display: flex;
     justify-content: center;
+    align-items: center;
     background-color: blue;
 }
 

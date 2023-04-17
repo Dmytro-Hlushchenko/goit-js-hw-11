@@ -4,6 +4,10 @@
   gap: 10px;
 }
 
+.gallery_item {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
 .img_comments {
   display: flex;
   flex-direction: row;
