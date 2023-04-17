@@ -1,0 +1,13 @@
+#search-form {
+  display: flex;
+  justify-content: center;
+  background-color: blue;
+}
+
+.form_input input {
+  height: 35px;
+}
+
+.form_input button {
+  height: 35px;
+}/*# sourceMappingURL=form.css.map */

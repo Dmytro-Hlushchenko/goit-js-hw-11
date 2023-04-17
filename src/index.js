@@ -3,7 +3,6 @@ import Notiflix from 'notiflix';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
-
 const KEY_PIXABAY = "32473548-3011831d563d5a9dc36fe58a5";
 const IMG_TYPE = "image_type=photo";
 const ORIENT = "orientation=horizontal"
@@ -11,7 +10,6 @@ const SAFESEARCH = "safesearch=true";
 
 const gallery = document.querySelector(".gallery_list")
 const inputForm = document.getElementById('search-form');
-
 
 inputForm.addEventListener('submit', onSearchBtn);
         
@@ -22,12 +20,11 @@ function onSearchBtn(e) {
         Notiflix.Notify.failure('Please, enter search words');
         return;
     }
-    axios(`https://pixabay.com/api/?key=${KEY_PIXABAY}&q=${query}&${IMG_TYPE}&${ORIENT}&${SAFESEARCH}`)
+    axios(`https://pixabay.com/api/?key=${KEY_PIXABAY}&q=${query}&${IMG_TYPE}&${ORIENT}&${SAFESEARCH}&per_page=40`)
         .then(({ data }) => createGallery(data.hits))
         .catch(onErrore);
         
-    
-    function createGallery(resultArray) {
+        function createGallery(resultArray) {
         if (resultArray.length === 0) {
             Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
             return
@@ -37,7 +34,7 @@ function onSearchBtn(e) {
         gallery.innerHTML = list;
         
         let lightbox = new SimpleLightbox('.gallery a', { /* options */ });
-        lightbox.refresh()
+        // lightbox.refresh();
     
     }
     
@@ -58,5 +55,4 @@ function onSearchBtn(e) {
             alert(`Oops${err}`);
     };
 }
-
 

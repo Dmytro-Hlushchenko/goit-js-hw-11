@@ -1,0 +1,28 @@
+.gallery_list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.img_comments {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  justify-content: center;
+}
+
+.image_comment {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.load-more {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 30px;
+  width: 150px;
+  background-color: blue;
+  color: white;
+}/*# sourceMappingURL=gallery.css.map */
