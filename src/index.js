@@ -2,36 +2,29 @@
 //З кожним наступним запитом, його необхідно збільшити на 1.
 //У разі пошуку за новим ключовим словом, значення page потрібно повернути до початкового,
 //оскільки буде пагінація по новій колекції зображень.
-//HTML документ вже містить розмітку кнопки, по кліку на яку,
-//необхідно виконувати запит за наступною групою зображень і додавати розмітку до
-// вже існуючих елементів галереї.
 
-//В початковому стані кнопка повинна бути прихована.
-//Після першого запиту кнопка з'являється в інтерфейсі під галереєю.
 //При повторному сабміті форми кнопка спочатку ховається, а після запиту знову відображається.
 //У відповіді бекенд повертає властивість totalHits - загальна кількість зображень,
 //які відповідають критерію пошуку(для безкоштовного акаунту. 
 //Якщо користувач дійшов до кінця колекції, ховай кнопку і виводь повідомлення з текстом 
 //"We're sorry, but you've reached the end of search results.".
 
-import axios from "axios";
+import GetPicsApi from './scripts/components/apiPics';
 import Notiflix from 'notiflix';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import LoadMoreBtn from "./scripts/components/LoadMoreBtn"; 
 
-const KEY_PIXABAY = "32473548-3011831d563d5a9dc36fe58a5";
-const IMG_TYPE = "image_type=photo";
-const ORIENT = "orientation=horizontal"
-const SAFESEARCH = "safesearch=true";
-
 const gallery = document.querySelector(".gallery_list");
 const inputForm = document.getElementById('search-form');
 
+const getPicsApi = new GetPicsApi;
 const loadMoreBtn = new LoadMoreBtn({
     selector: ".load-more",
     isHidden: true
 });
+
+console.log(getPicsApi)
 
 loadMoreBtn.button.addEventListener('click', onLoadMoreBtn)
 inputForm.addEventListener('submit', onSearchBtn);
@@ -44,9 +37,9 @@ function onSearchBtn(e) {
         Notiflix.Notify.failure('Please, enter search words');
         return;
     }
-    axios(`https://pixabay.com/api/?key=${KEY_PIXABAY}&q=${query}&${IMG_TYPE}&${ORIENT}&${SAFESEARCH}&per_page=40`)
-        .then(({ data }) => createGallery(data.hits))
-        .catch(onErrore);
+    getPicsApi.getPics(query)
+      .then(({ data }) => createGallery(data.hits))
+      .catch(onErrore);
     
     function createGallery(resultArray) {
         console.log(resultArray)
@@ -62,8 +55,6 @@ function onSearchBtn(e) {
         
         let lightbox = new SimpleLightbox('.gallery a', { /* options */ });
         // lightbox.refres h();
-
-    
     }
     
     function createCard(item) {
