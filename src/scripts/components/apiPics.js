@@ -12,10 +12,8 @@ export default class GetPicsApi{
         this.page = 1;
     }
     
-    getPics(query) {
-        return axios(`https://pixabay.com/api/?key=${KEY_PIXABAY}&q=${query}
-       &${IMG_TYPE}&${ORIENT}&${SAFESEARCH}
-       &per_page=${PER_PAGE}&page=${this.page}}`);
+    getPics() {
+        return axios(`https://pixabay.com/api/?key=${KEY_PIXABAY}&q=${this.query}&${IMG_TYPE}&${ORIENT}&${SAFESEARCH}&per_page=${PER_PAGE}&page=${this.page}`);
     } 
 
     updatePage() {

@@ -17,6 +17,7 @@ import LoadMoreBtn from "./scripts/components/LoadMoreBtn";
 
 const gallery = document.querySelector(".gallery_list");
 const inputForm = document.getElementById('search-form');
+ let lightbox = new SimpleLightbox('.gallery a', { /* options */ });
 
 const getPicsApi = new GetPicsApi;
 const loadMoreBtn = new LoadMoreBtn({
@@ -37,11 +38,14 @@ function onSearchBtn(e) {
         Notiflix.Notify.failure('Please, enter search words');
         return;
     }
-    getPicsApi.getPics(query)
+    getPicsApi.query = query;
+        
+    getPicsApi.getPics()
       .then(({ data }) => createGallery(data.hits))
       .catch(onErrore);
-    
-    function createGallery(resultArray) {
+}
+
+function createGallery(resultArray) {
         console.log(resultArray)
             if (resultArray.length === 0) {
             Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
@@ -52,12 +56,15 @@ function onSearchBtn(e) {
         gallery.innerHTML = list;
 
         loadMoreBtn.showBtn();
+    lightbox.refresh();
         
-        let lightbox = new SimpleLightbox('.gallery a', { /* options */ });
-        // lightbox.refres h();
-    }
+}
     
-    function createCard(item) {
+function onErrore(err) {
+        alert(`Oops${err}`);
+    }
+
+function createCard(item) {
         return `<li class = "gallery_item">
          <a href = "${item.largeImageURL}">
         <img width = "480" height = "320" src = "${item.webformatURL}" alt = "${item.tags}"></img>
@@ -71,11 +78,19 @@ function onSearchBtn(e) {
         </li>`
     }
 
-    function onErrore(err) {
-        alert(`Oops${err}`);
-    }
+function onLoadMoreBtn() {
+    getPicsApi.updatePage();
+    getLoadMorePics();
 }
 
-function onLoadMoreBtn() {
-    console.log('click')
+function getLoadMorePics() { 
+    getPicsApi.getPics()
+      .then(({ data }) => createMoreGallery(data.hits))
+          
+    function createMoreGallery(resultArray) {
+        const list = resultArray.reduce((markup, item) => markup + createCard(item), "");
+        gallery.insertAdjacentHTML('beforeend', list);
+        lightbox.refresh();
+    }
+    
 }
