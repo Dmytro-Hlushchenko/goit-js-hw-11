@@ -12,7 +12,8 @@ import LoadMoreBtn from "./scripts/components/LoadMoreBtn";
 
 const gallery = document.querySelector(".gallery_list");
 const inputForm = document.getElementById('search-form');
- let lightbox = new SimpleLightbox('.gallery a', { /* options */ });
+let lightbox = new SimpleLightbox('.gallery a', { /* options */ });
+let list = '';
 
 const getPicsApi = new GetPicsApi;
 const loadMoreBtn = new LoadMoreBtn({
