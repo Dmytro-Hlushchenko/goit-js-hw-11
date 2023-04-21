@@ -1,11 +1,6 @@
-//Початкове значення параметра page повинно бути 1.
-//З кожним наступним запитом, його необхідно збільшити на 1.
-//У разі пошуку за новим ключовим словом, значення page потрібно повернути до початкового,
-//оскільки буде пагінація по новій колекції зображень.
-
-//При повторному сабміті форми кнопка спочатку ховається, а після запиту знову відображається.
 //У відповіді бекенд повертає властивість totalHits - загальна кількість зображень,
-//які відповідають критерію пошуку(для безкоштовного акаунту. 
+//які відповідають критерію пошуку(для безкоштовного акаунту.
+
 //Якщо користувач дійшов до кінця колекції, ховай кнопку і виводь повідомлення з текстом 
 //"We're sorry, but you've reached the end of search results.".
 
@@ -25,8 +20,6 @@ const loadMoreBtn = new LoadMoreBtn({
     isHidden: true
 });
 
-console.log(getPicsApi)
-
 loadMoreBtn.button.addEventListener('click', onLoadMoreBtn)
 inputForm.addEventListener('submit', onSearchBtn);
 
@@ -39,30 +32,32 @@ function onSearchBtn(e) {
         return;
     }
     getPicsApi.query = query;
-        
+    getPicsApi.resetPage();        
     getPicsApi.getPics()
       .then(({ data }) => createGallery(data.hits))
       .catch(onErrore);
 }
 
 function createGallery(resultArray) {
-        console.log(resultArray)
             if (resultArray.length === 0) {
             Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
             return
         }
         
-        const list = resultArray.reduce((markup, item) => markup + createCard(item), "");
+    createListHtml(resultArray);
         gallery.innerHTML = list;
 
         loadMoreBtn.showBtn();
-    lightbox.refresh();
-        
+        lightbox.refresh();
 }
     
 function onErrore(err) {
         alert(`Oops${err}`);
-    }
+}
+
+function createListHtml(resultArray) { 
+    return list = resultArray.reduce((markup, item) => markup + createCard(item), "");
+}
 
 function createCard(item) {
         return `<li class = "gallery_item">
@@ -70,10 +65,10 @@ function createCard(item) {
         <img width = "480" height = "320" src = "${item.webformatURL}" alt = "${item.tags}"></img>
         </a>
         <div class = "img_comments">
-        <p class = "image_comment">likes <b class = img_comments_vale>${item.likes}</b></p>
-        <p class = "image_comment">views <b class = img_comments_vale>${item.views}</b></p>
-        <p class = "image_comment">comments <b class = img_comments_vale>${item.comments}</b></p>
-        <p class = "image_comment">downloads <b class = img_comments_vale>${item.downloads}</b></p>
+        <p class = "image_comment">likes <b>${item.likes}</b></p>
+        <p class = "image_comment">views <b>${item.views}</b></p>
+        <p class = "image_comment">comments <b>${item.comments}</b></p>
+        <p class = "image_comment">downloads <b>${item.downloads}</b></p>
         </div>
         </li>`
     }
@@ -85,10 +80,11 @@ function onLoadMoreBtn() {
 
 function getLoadMorePics() { 
     getPicsApi.getPics()
-      .then(({ data }) => createMoreGallery(data.hits))
-          
+        .then(({ data }) => createMoreGallery(data.hits))
+        .catch(onErrore)
+    
     function createMoreGallery(resultArray) {
-        const list = resultArray.reduce((markup, item) => markup + createCard(item), "");
+        createListHtml(resultArray);
         gallery.insertAdjacentHTML('beforeend', list);
         lightbox.refresh();
     }
