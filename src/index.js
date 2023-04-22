@@ -1,8 +1,8 @@
-//У відповіді бекенд повертає властивість totalHits - загальна кількість зображень,
-//які відповідають критерію пошуку(для безкоштовного акаунту.
+//Використовується синтаксис async/await.
 
-//Якщо користувач дійшов до кінця колекції, ховай кнопку і виводь повідомлення з текстом 
-//"We're sorry, but you've reached the end of search results.".
+//!??//
+//Прокручування сторінки
+//Нескінченний скрол
 
 import GetPicsApi from './scripts/components/apiPics';
 import Notiflix from 'notiflix';
@@ -24,7 +24,6 @@ const loadMoreBtn = new LoadMoreBtn({
 loadMoreBtn.button.addEventListener('click', onLoadMoreBtn)
 inputForm.addEventListener('submit', onSearchBtn);
 
-
 function onSearchBtn(e) { 
     e.preventDefault();
     const query = (e.currentTarget.elements.searchQuery.value).trim();
@@ -33,25 +32,37 @@ function onSearchBtn(e) {
         return;
     }
     getPicsApi.query = query;
-    getPicsApi.resetPage();        
-    getPicsApi.getPics()
-      .then(({ data }) => createGallery(data.hits))
-      .catch(onErrore);
+    getPicsApi.resetPage();
+    loadMoreBtn.hideBtn();
+    
+    const getAxiosResult = getPicsApi.getPics();
+    getAxiosResult.then((res) => createGallery(res.data.hits))
+    getAxiosResult.then((res) => totalHitsAlert(res.data.totalHits))
+    .catch(onErrore);
+        
+}
+
+function totalHitsAlert(totalHits) {
+    if (totalHits === 0) {
+        return
+    }
+        Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
 }
 
 function createGallery(resultArray) {
-            if (resultArray.length === 0) {
-            Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
-            return
-        }
+    if (resultArray.length === 0) {
+        Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.')
+        return
+    }
         
     createListHtml(resultArray);
-        gallery.innerHTML = list;
-
+    gallery.innerHTML = list;
+    lightbox.refresh();
+    if (resultArray.length >= 40) {
         loadMoreBtn.showBtn();
-        lightbox.refresh();
+        return
+    }
 }
-    
 function onErrore(err) {
         alert(`Oops${err}`);
 }
@@ -80,14 +91,18 @@ function onLoadMoreBtn() {
 }
 
 function getLoadMorePics() { 
-    getPicsApi.getPics()
-        .then(({ data }) => createMoreGallery(data.hits))
+    const getAxiosMoreResult = getPicsApi.getPics();
+    getAxiosMoreResult.then(({ data }) => createMoreGallery(data.hits))
         .catch(onErrore)
     
     function createMoreGallery(resultArray) {
         createListHtml(resultArray);
         gallery.insertAdjacentHTML('beforeend', list);
         lightbox.refresh();
+        if (resultArray.length < 40) { 
+            loadMoreBtn.hideBtn();
+            Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.")
+        }
     }
     
 }
