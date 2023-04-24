@@ -13,7 +13,8 @@ export default class GetPicsApi{
     }
     
     getPics() {
-        return axios.get(`https://pixabay.com/api/?key=${KEY_PIXABAY}&q=${this.query}&${IMG_TYPE}&${ORIENT}&${SAFESEARCH}&per_page=${PER_PAGE}&page=${this.page}`);
+       return axios.get(`https://pixabay.com/api/?key=${KEY_PIXABAY}&q=${this.query}&${IMG_TYPE}&${ORIENT}&${SAFESEARCH}&per_page=${PER_PAGE}&page=${this.page}`);
+
     } 
 
     updatePage() {

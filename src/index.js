@@ -1,14 +1,12 @@
-//Використовується синтаксис async/await.
-
-//!??//
 //Прокручування сторінки
 //Нескінченний скрол
 
-import GetPicsApi from './scripts/components/apiPics';
+import GetPicsApi from "./scripts/components/apiPics";
+import LoadMoreBtn from "./scripts/components/LoadMoreBtn"; 
 import Notiflix from 'notiflix';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-import LoadMoreBtn from "./scripts/components/LoadMoreBtn"; 
+
 
 const gallery = document.querySelector(".gallery_list");
 const inputForm = document.getElementById('search-form');
@@ -21,10 +19,10 @@ const loadMoreBtn = new LoadMoreBtn({
     isHidden: true
 });
 
-loadMoreBtn.button.addEventListener('click', onLoadMoreBtn)
+loadMoreBtn.button.addEventListener('click', onLoadMoreBtn);
 inputForm.addEventListener('submit', onSearchBtn);
 
-function onSearchBtn(e) { 
+async function onSearchBtn(e) { 
     e.preventDefault();
     const query = (e.currentTarget.elements.searchQuery.value).trim();
     if (!query) {
@@ -35,10 +33,14 @@ function onSearchBtn(e) {
     getPicsApi.resetPage();
     loadMoreBtn.hideBtn();
     
-    const getAxiosResult = getPicsApi.getPics();
-    getAxiosResult.then((res) => createGallery(res.data.hits))
-    getAxiosResult.then((res) => totalHitsAlert(res.data.totalHits))
-    .catch(onErrore);
+    const getAxiosResult = await getPicsApi.getPics();
+    try {
+        createGallery(getAxiosResult.data.hits);
+        totalHitsAlert(getAxiosResult.data.totalHits);
+    } catch(errore) { 
+        onErrore(errore);
+    }
+    
         
 }
 
@@ -90,11 +92,13 @@ function onLoadMoreBtn() {
     getLoadMorePics();
 }
 
-function getLoadMorePics() { 
-    const getAxiosMoreResult = getPicsApi.getPics();
-    getAxiosMoreResult.then(({ data }) => createMoreGallery(data.hits))
-        .catch(onErrore)
-    
+async function getLoadMorePics() { 
+    const getAxiosMoreResult = await getPicsApi.getPics();
+    try {
+        createMoreGallery(getAxiosMoreResult.data.hits);
+    } catch (errore) { 
+        onErrore(errore);
+    }
     function createMoreGallery(resultArray) {
         createListHtml(resultArray);
         gallery.insertAdjacentHTML('beforeend', list);
@@ -104,5 +108,5 @@ function getLoadMorePics() {
             Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.")
         }
     }
-    
+
 }
